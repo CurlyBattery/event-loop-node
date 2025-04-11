@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <title>Code Editor</title>
 </head>
 <body>
@@ -34,5 +35,25 @@
 
 <script src="editor.js"></script>
     <script src="editor-console.js"></script>
+<script>
+  const socket = io.connect('http://localhost:8000');
+
+  socket.on('connect', () => {
+
+    console.log('Сервис html подключился к web socket');
+  });
+
+  socket.on('seq-num', (message) => {
+    const consoleLogList = document.querySelector('.editor__console-logs');
+    const newLogItem = document.createElement('li');
+    const newLogText = document.createElement('pre');
+
+    newLogText.textContent = `> ${message.message}`;
+
+    newLogItem.appendChild(newLogText);
+
+    consoleLogList.appendChild(newLogItem);
+  });
+</script>
 </body>
 </html>

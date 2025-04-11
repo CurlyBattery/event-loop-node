@@ -29,8 +29,6 @@ let editorLib = {
 
   },
   init() {
-
-
     codeEditor.setTheme('ace/theme/monokai');
 
     codeEditor.session.setMode('ace/mode/javascript');
@@ -46,12 +44,29 @@ let editorLib = {
 executeCodeBtn.addEventListener('click', () => {
   editorLib.clearConsoleScreen();
   const userCode = codeEditor.getValue();
+  let result;
   try {
-    new Function(userCode)();
+    // new Function(userCode)();
+    async function loopHandler() {
+      const response = await fetch('http://localhost:8080/loop',
+        {
+          mode: 'cors',
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: userCode }),
+        },
+      );
+      data = await response.json();
+      console.log('Data: ' + data.message);
+      result = data.message;
+      return '';
+    }
+    loopHandler();
   } catch (err) {
     console.error(err);
   }
-
   editorLib.printToConsole();
 
 
